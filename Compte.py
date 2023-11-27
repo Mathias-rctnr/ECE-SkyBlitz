@@ -123,7 +123,7 @@ def Create_Frame_Compte():
             elif NbBus=="Nb. Bus. Place" or not NbBus.isdigit():
                 error+=1
                 print("11")
-        print("ID: " + str(ID))
+        print("ID: " + str(ID)) #PRINT INFORMATIONS
         print("dep: " + str(depart))
         print("arri: " + str(arrival))
         print("day: " + str(day))
