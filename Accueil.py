@@ -6,7 +6,7 @@ import pymysql
 from Next_Flights import Create_Frame_Next_flights
 import datetime
 
-#!------------------- DATABASE
+#!------------------- DATABASE              ___________________ /!\ METTRE RESET LOADING DANS TOUT LES CLOSES /!\
 
 def mysqlconnect():
     conn = pymysql.connect(
@@ -39,6 +39,24 @@ def Recup_User():
     FileUser.close()
     return var
 
+def Analyze_Loading():
+    FileUser = open("Loading.txt", "r")
+    var = FileUser.readline().strip()
+    print("Loading: " + str(var))
+    FileUser.close()
+    
+    if var=="0":
+        FileWrite = open('Loading.txt', 'w')
+        FileWrite.write("1")
+        FileWrite.close()
+        
+    return var
+
+def Reset_Loading():
+    FileLoad = open("Loading.txt", "w")
+    FileLoad.write("0")
+    FileLoad.close()
+
 def Delete_User():
     FileUser = open("Connect_User.txt", "w")
     FileUser.close()
@@ -48,6 +66,8 @@ def Delete_User():
 ID_User = Recup_User()
 
 def Create_Frame_Menu():
+    
+    print("____________ID_______: " + str(ID_User))
 
     Frame = CTk()
     Frame.title("Menu")
@@ -76,6 +96,11 @@ def Create_Frame_Menu():
         else:
             return False
         
+    def show_Connection(Frame):
+        Frame.destroy()
+        from Connexion import Create_Connection_Frame
+        Create_Connection_Frame()
+        
     def Verif_Input(Frame):
         if ((Departure_Input.get()!="Departure") and (Arrival_Input.get()!="Arrival") and (Input_Year.get()!="Year") and (Input_Month.get()!="Month") and (Input_Day.get()!="Day")) and (VerifDate()):
             show_next_flights_Research(Frame)
@@ -83,6 +108,16 @@ def Create_Frame_Menu():
             messagebox.showinfo("error", "Your date are too old")
         else:
             messagebox.showinfo("error", "Your inputs are not correct.")
+            
+    def VerifConnection(ID, Frame):
+        if ID=="":
+            print("Pas de Connexion")
+            show_Connection(Frame)
+        else:
+            print("Connection")
+            Frame.destroy()
+            from Compte import Create_Frame_Compte
+            Create_Frame_Compte()
     
         
     def show_next_flights_Research(Frame):
@@ -120,7 +155,7 @@ def Create_Frame_Menu():
     btn_Book.grid(row=0, column=0, sticky="nsew", padx=(0, 10), pady=10)
 
     btn_Account = CTkButton(master=Div_btn_Header, text="ACCOUNT", corner_radius=50, fg_color="#FF4C13", hover_color="#FF764A", width=200, height=75, border_width=6,
-                    border_color="#FF764A", font=("Arial", 30, "bold"), text_color="#FFFFFF")
+                    border_color="#FF764A", font=("Arial", 30, "bold"), text_color="#FFFFFF", command=lambda: VerifConnection(ID_User, Frame))
     btn_Account.grid(row=0, column=1, sticky="nsew", padx=(0, 40), pady=10)
 
 
@@ -211,11 +246,13 @@ def Create_Frame_Menu():
     
     def on_closing():
         Delete_User()
+        Reset_Loading()
         print("Fermeture de la page.")
         Frame.destroy()
     
     Frame.protocol("WM_DELETE_WINDOW", on_closing)
 
     Frame.mainloop()
-    
-Create_Frame_Menu()
+
+if Analyze_Loading()=="0":
+    Create_Frame_Menu()

@@ -6,7 +6,6 @@ import pymysql
 import random
 from Flight_class import FLight
 from User_class import User
-#from Accueil import Create_Frame_Menu
 from payment import Create_Payment_Frame, update, show_Invalid, show_Valid
 
 #!------------------- DATABASE
@@ -59,6 +58,11 @@ def update(query):
         print(f"Erreur lors de la mise à jour : {e}")
 
 #TODO --------------------------- GUI
+
+def show_Menu(Frame_Accueil):
+        from Accueil import Create_Frame_Menu
+        Frame_Accueil.destroy()
+        Create_Frame_Menu()
 
 def Convert_Month(mois):
         mois = mois.lower()
@@ -409,7 +413,7 @@ def Create_Frame_Compte():
     Header.columnconfigure(2, weight=2)
 
     Btn_Home = CTkButton(master=Header, text="HOME", corner_radius=50, fg_color="#FFFFFF", width=200, height=75, hover_color="#FF764A",
-                    font=("Arial", 30, "bold"), text_color="#000000")
+                    font=("Arial", 30, "bold"), text_color="#000000", command=lambda: show_Menu(Frame_Accueil))
     Btn_Home.grid(row=0, column=0, padx=(0, 120))
 
     Div_Titre = CTkLabel(master=Header, fg_color="transparent", text="", width=Frame_Accueil.winfo_screenwidth(), corner_radius=20)
