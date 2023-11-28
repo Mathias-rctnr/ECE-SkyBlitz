@@ -46,6 +46,11 @@ def recup_Passenger(list):
     output_list = list[0].split('-')
     return output_list
 
+def Reset_Loading():
+    FileLoad = open("Loading.txt", "w")
+    FileLoad.write("0")
+    FileLoad.close()
+
 def update(query):
     try:
         conn = mysqlconnect()
@@ -666,6 +671,7 @@ def Create_Frame_Compte():
     
     def on_closing():
         Delete_User()
+        Reset_Loading()
         print("Fermeture de la page.")
         Frame_Accueil.destroy()
     

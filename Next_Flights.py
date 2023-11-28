@@ -18,6 +18,11 @@ def mysqlconnect():
 )
     return conn
 
+def Reset_Loading():
+    FileLoad = open("Loading.txt", "w")
+    FileLoad.write("0")
+    FileLoad.close()
+
 def Sql_Query(conn, query):
     cur = conn.cursor()
     cur.execute(query)
@@ -359,6 +364,7 @@ def Create_Frame_Next_flights(Airport_Dep, Airport_Arriv, Year, Month, Day):
         
     def on_closing():
         Delete_User()
+        Reset_Loading()
         print("Fermeture de la page.")
         Frame_Accueil.destroy()
     

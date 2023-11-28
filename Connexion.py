@@ -82,6 +82,11 @@ def Show_Account(Frame):
     Frame.destroy()
     from Compte import Create_Frame_Compte
     Create_Frame_Compte()
+    
+def Reset_Loading():
+    FileLoad = open("Loading.txt", "w")
+    FileLoad.write("0")
+    FileLoad.close()
 
 def verif_input_connec(mail, password, frame):
     error=0

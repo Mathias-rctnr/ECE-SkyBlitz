@@ -6,6 +6,11 @@ import pymysql
 
 #!------------------- DATABASE
 
+def Reset_Loading():
+    FileLoad = open("Loading.txt", "w")
+    FileLoad.write("0")
+    FileLoad.close()
+
 def mysqlconnect():
     conn = pymysql.connect(
     host='localhost',
@@ -29,6 +34,11 @@ def Query(query):
     result = Sql_Query(connec, query)
     db_close_connecction(connec)
     return result
+
+def Reset_Loading():
+    FileLoad = open("Loading.txt", "w")
+    FileLoad.write("0")
+    FileLoad.close()
 
 #TODO --------------------------- GUI
 
@@ -91,6 +101,7 @@ def Create_Valid_Payment_Frame():
     
     def on_closing():
         Delete_User()
+        Reset_Loading()
         print("Fermeture de la page.")
         Frame.destroy()
     

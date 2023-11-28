@@ -64,6 +64,11 @@ def formatage(Data):
     Data = temp
     return Data
 
+def Reset_Loading():
+    FileLoad = open("Loading.txt", "w")
+    FileLoad.write("0")
+    FileLoad.close()
+
 def Verif_Input_Account(title, Firstname, Lastname, year, month, day, nationality, adress, city, postCode, country, phone, mail, password):
     error=0
     indication=""
