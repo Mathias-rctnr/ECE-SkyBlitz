@@ -37,18 +37,34 @@ def Recup_User():
     FileUser.close()
     return var
 
-ID_User = Recup_User()
+def update(query):
+    try:
+        conn = mysqlconnect()
+        cur = conn.cursor()
+        cur.execute(query)
+        conn.commit()
+        db_close_connecction(conn)
+        print("Mise à jour réussie.")
+    except Exception as e:
+        print(f"Erreur lors de la mise à jour : {e}")
 
 def Delete_User():
     FileUser = open("Connect_User.txt", "w")
     FileUser.close()
     
-def show_Menu(Frame_Accueil):
-    from Accueil import Create_Frame_Menu
+def show_Payment(Frame_Accueil, ID):
+    from payment import Create_Payment_Frame
+    from User_class import Card
+    print("  /!\____________ DELETE CARD")
+    User_Card = Card(ID, "0", "000", "01", "", "2100", "None")
+    query_Delete = User_Card.Delete_Info()
+    update(query_Delete)
     Frame_Accueil.destroy()
-    Create_Frame_Menu()
+    Create_Payment_Frame()
 
 def Create_Invalid_Payment_Frame():
+    
+    ID_User = Recup_User()
 
     Frame = CTk()
     Frame.title("Validation")
@@ -59,13 +75,13 @@ def Create_Invalid_Payment_Frame():
     Frame.rowconfigure(0, weight=1)
     Frame.columnconfigure(0, weight=1)
 
-    #PlaneImage = "Payment Invalid Background.png"
-    """ BackG_Image = Image.open(PlaneImage)
+    PlaneImageInvalid= "Payment Invalid Background.png"
+    BackG_Image = Image.open(PlaneImageInvalid)
     resized_image = BackG_Image.resize((1700, 1080), Image.ANTIALIAS)
     backG_Image_Convert = ImageTk.PhotoImage(resized_image)
 
     BackGround = tk.Label(Frame, image=backG_Image_Convert, width=1920, height=1080)
-    BackGround.grid(row=0, column=0, sticky="nsew") """
+    BackGround.grid(row=0, column=0, sticky="nsew")
 
     Div_Texte = CTkFrame(master=Frame, width=950, height=100, corner_radius=40, fg_color="#DBDBDB", border_color="#CBCBCB", border_width=5, bg_color="#EADFC1")
     Div_Texte.grid(row=0, column=0, sticky="s", pady=(0, 20))
@@ -84,7 +100,7 @@ def Create_Invalid_Payment_Frame():
     Text.grid(row=0, column=0, columnspan=2, sticky='se', padx=(50, 0), pady=(0, 20))
 
     Btn_Home = CTkButton(master=Div_Texte, text="RETRY", corner_radius=25, fg_color="#FF4C13", hover_color="#FFFFFF", width=200, height=90, border_width=6,
-                    border_color="#FF764A", font=("Arial", 30, "bold"), text_color="#FFFFFF", command=lambda: show_Menu(Frame))
+                    border_color="#FF764A", font=("Arial", 30, "bold"), text_color="#FFFFFF", command=lambda: show_Payment(Frame, ID_User))
     Btn_Home.grid(row=0, column=2, sticky='se', padx=10, pady=10)
     
     def on_closing():

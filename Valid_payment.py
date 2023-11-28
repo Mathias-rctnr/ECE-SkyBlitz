@@ -45,8 +45,9 @@ def Delete_User():
     FileUser.close()
 
 def show_Menu(frame):
-    """ frame.destroy()
-    Create_Frame_Menu() """
+    from Accueil import Create_Frame_Menu
+    frame.destroy()
+    Create_Frame_Menu()
 
 def Create_Valid_Payment_Frame():
 
@@ -60,8 +61,8 @@ def Create_Valid_Payment_Frame():
     Frame.columnconfigure(0, weight=1)
 
 
-    PlaneImage = "Payment Valid Background.png"
-    BackG_Image = Image.open(PlaneImage)
+    PlaneImageValid = "Payment Valid Background.png"
+    BackG_Image = Image.open(PlaneImageValid)
     resized_image = BackG_Image.resize((1700, 1080), Image.ANTIALIAS)
     backG_Image_Convert = ImageTk.PhotoImage(resized_image)
 

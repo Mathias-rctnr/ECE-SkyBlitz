@@ -53,8 +53,6 @@ def Recup_User():
     FileUser.close()
     return var
 
-ID_User = Recup_User()
-
 def Delete_User():
     FileUser = open("Connect_User.txt", "w")
     FileUser.close()
@@ -64,6 +62,8 @@ def show_Payment(Frame):
     Create_Payment_Frame()
 
 def Create_Frame_Next_flights(Airport_Dep, Airport_Arriv, Year, Month, Day):
+    
+    ID_User = Recup_User()
     
     requeteDeparture = Airport_Dep
 
@@ -246,7 +246,7 @@ def Create_Frame_Next_flights(Airport_Dep, Airport_Arriv, Year, Month, Day):
         
         fichier_Flight.close()
         
-        Exist = Query("SELECT COUNT(*) FROM CreditCard WHERE ID_UserCard = '"+ ID_User +"';")
+        Exist = Query("SELECT COUNT(*) FROM CreditCard WHERE ID_UserCard = '"+ str(ID_User) +"';")
         Exist = formatage(Exist)
         
         Already_Book =  Query("SELECT ID_User from Flight Where departureAirport = '"+ str(DepartAirp[index-2]) +"' AND arrivalAirport = '"+ str(ArrivAirp[index-2]) +"' AND departureDate_Hour = '"+ str(DepartureHour[index-2]) +"' AND departureDate_Day = '"+ str(DepartureDay[index-2]) +"' AND departureDate_Month = '"+  str(DepartureMonth[index-2]) +"' AND departureDate_Year = '"+ str(DepartureYear[index-2]) +"';")
@@ -263,6 +263,10 @@ def Create_Frame_Next_flights(Airport_Dep, Airport_Arriv, Year, Month, Day):
         ListPassengers = recup_Passenger(Already_Book)
         
         if ID_User not in ListPassengers:
+            
+            print("******************************* Exist User : " + str(Exist))
+            print("ID_User : " + str(ID_User))
+            
             if(Exist[0]==0):
                 show_Payment(frame)
             else:
