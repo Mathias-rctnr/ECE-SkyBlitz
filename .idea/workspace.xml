@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="29dd6acf-82b7-4e49-99b8-36ed5e02c856" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/Actual_Flight.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Actual_Flight.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Compte.py" beforeDir="false" afterPath="$PROJECT_DIR$/Compte.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Connect_User.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Connect_User.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Connexion.py" beforeDir="false" afterPath="$PROJECT_DIR$/Connexion.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Loading.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Loading.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Next_Flights.py" beforeDir="false" afterPath="$PROJECT_DIR$/Next_Flights.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/newAccountUser.py" beforeDir="false" afterPath="$PROJECT_DIR$/newAccountUser.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="LogFilters">
+    <option name="FILTER_ERRORS" value="false" />
+    <option name="FILTER_WARNINGS" value="false" />
+    <option name="FILTER_INFO" value="true" />
+    <option name="FILTER_DEBUG" value="true" />
+    <option name="CUSTOM_FILTER" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="2Yr90nleehtgJzmE1T1Bozh4FCc" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/mathiasrechsteiner/Desktop/Cours ING 3/Londres/OOP Python/ECE-SkyBlitz",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="29dd6acf-82b7-4e49-99b8-36ed5e02c856" name="Changes" comment="" />
+      <created>1701272611682</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1701272611682</updated>
+      <workItem from="1701272612777" duration="33000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

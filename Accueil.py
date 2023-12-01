@@ -2,70 +2,15 @@ from customtkinter import *
 import tkinter as tk
 from tkinter import messagebox
 from PIL import Image, ImageTk
-import pymysql
 from Next_Flights import Create_Frame_Next_flights
 import datetime
-
-#!------------------- DATABASE              ___________________ /!\ METTRE RESET LOADING DANS TOUT LES CLOSES /!\
-
-def mysqlconnect():
-    conn = pymysql.connect(
-    host='localhost',
-    user='root',
-    db='bdd_skyblitz',
-    port=8080
-)
-    return conn
-
-def Sql_Query(conn, query):
-    cur = conn.cursor()
-    cur.execute(query)
-    output = cur.fetchall()
-    return output
-
-def db_close_connecction(conn):
-    conn.close()
-
-def Query(query):
-    connec = mysqlconnect()
-    result = Sql_Query(connec, query)
-    db_close_connecction(connec)
-    return result
-
-def Recup_User():
-    FileUser = open("Connect_User.txt", "r")
-    var = FileUser.readline().strip()
-    print(var)
-    FileUser.close()
-    return var
-
-def Analyze_Loading():
-    FileUser = open("Loading.txt", "r")
-    var = FileUser.readline().strip()
-    print("Loading: " + str(var))
-    FileUser.close()
-    
-    if var=="0":
-        FileWrite = open('Loading.txt', 'w')
-        FileWrite.write("1")
-        FileWrite.close()
-        
-    return var
-
-def Reset_Loading():
-    FileLoad = open("Loading.txt", "w")
-    FileLoad.write("0")
-    FileLoad.close()
-
-def Delete_User():
-    FileUser = open("Connect_User.txt", "w")
-    FileUser.close()
+import Database as Db
 
 #TODO --------------------------- GUI
 
-ID_User = Recup_User()
-
 def Create_Frame_Menu():
+    
+    ID_User = Db.Recup_User()
     
     print("____________ID_______: " + str(ID_User))
 
@@ -161,7 +106,7 @@ def Create_Frame_Menu():
 
     #? --------------------- DIV BOOKING
 
-    Departure_Data = Query("SELECT DISTINCT departureAirport FROM Flight ORDER BY departureAirport;")
+    Departure_Data = Db.Query("SELECT DISTINCT departureAirport FROM Flight ORDER BY departureAirport;")
 
     Tuple_Departure = []
     for i in range(0, len(Departure_Data)):
@@ -170,7 +115,7 @@ def Create_Frame_Menu():
     Departure_Data = Tuple_Departure
 
 
-    Arrival_Data = Query("select distinct arrivalAirport from Flight ORDER BY arrivalAirport;")
+    Arrival_Data = Db.Query("select distinct arrivalAirport from Flight ORDER BY arrivalAirport;")
 
     Tuple_Arrival = []
     for i in range(0, len(Arrival_Data)):
@@ -245,8 +190,8 @@ def Create_Frame_Menu():
     print(Departure_Input.get())
     
     def on_closing():
-        Delete_User()
-        Reset_Loading()
+        Db.Delete_User()
+        Db.Reset_Loading()
         print("Fermeture de la page.")
         Frame.destroy()
     
@@ -254,5 +199,5 @@ def Create_Frame_Menu():
 
     Frame.mainloop()
 
-if Analyze_Loading()=="0":
+if Db.Analyze_Loading()=="0":
     Create_Frame_Menu()

@@ -7,62 +7,7 @@ from Invalid_payment import Create_Invalid_Payment_Frame
 from Valid_payment import Create_Valid_Payment_Frame
 from User_class import User, Card
 from Flight_class import FLight
-
-#!------------------- DATABASE
-
-def mysqlconnect():
-    conn = pymysql.connect(
-    host='localhost',
-    user='root',
-    db='bdd_skyblitz',
-    port=8080
-)
-    return conn
-
-def Reset_Loading():
-    FileLoad = open("Loading.txt", "w")
-    FileLoad.write("0")
-    FileLoad.close()
-
-def Sql_Query(conn, query):
-    cur = conn.cursor()
-    cur.execute(query)
-    output = cur.fetchall()
-    return output
-
-def db_close_connecction(conn):
-    conn.close()
-    
-        
-def recup_Passenger(list):
-    output_list = list[0].split('-')
-    return output_list
-
-
-def update(query):
-    try:
-        conn = mysqlconnect()
-        cur = conn.cursor()
-        cur.execute(query)
-        conn.commit()
-        db_close_connecction(conn)
-        print("Mise à jour réussie.")
-    except Exception as e:
-        print(f"Erreur lors de la mise à jour : {e}")
-
-
-def Query(query):
-    connec = mysqlconnect()
-    result = Sql_Query(connec, query)
-    db_close_connecction(connec)
-    return result
-
-def formatage(Data):
-    temp = []
-    for i in range(0, len(Data)):
-        temp.append(Data[i][0])
-    Data = temp
-    return Data
+import Database as Db
 
 def Recup_info_flight():
     
@@ -77,32 +22,8 @@ def Recup_info_flight():
     
     return Info
 
-""" def ADD_BDD(name, number, month, year, cvc, Bank_Account):
-    print(name)
-    print(number)
-    print(month)
-    print(year)
-    print(cvc)
-    
-    connec = mysqlconnect()
-    db_close_connecction(connec)
-    insert_into_credit_card(ID_User, str(number), str(cvc), str(month), str(name), str(year), str(Bank_Account))
-
-    print("FIN BDD") """
-
 #TODO --------------------------- GUI
 
-def Recup_User():
-    FileUser = open("Connect_User.txt", "r")
-    var = FileUser.readline().strip()
-    FileUser.close()
-    return var
-
-ID_User = Recup_User()
-
-def Delete_User():
-    FileUser = open("Connect_User.txt", "w")
-    FileUser.close()
 
 def show_Invalid(Frame):
     Frame.destroy()
@@ -114,9 +35,11 @@ def show_Valid(Frame):
     
 def Create_Payment_Frame():
     
+    ID_User = Db.Recup_User()
+    
     Flight_Info = Recup_info_flight()
-    ID_Flight = Query("SELECT ID_flight from Flight Where departureAirport = '"+ Flight_Info[0] +"' AND arrivalAirport = '"+ Flight_Info[1] +"' AND departureDate_Hour = '"+ Flight_Info[2] +"' AND departureDate_Day = '"+ Flight_Info[3] +"' AND departureDate_Month = '"+  Flight_Info[4] +"' AND departureDate_Year = '"+ Flight_Info[5] +"';")
-    ID_Flight = formatage(ID_Flight)
+    ID_Flight = Db.Query("SELECT ID_flight from Flight Where departureAirport = '"+ Flight_Info[0] +"' AND arrivalAirport = '"+ Flight_Info[1] +"' AND departureDate_Hour = '"+ Flight_Info[2] +"' AND departureDate_Day = '"+ Flight_Info[3] +"' AND departureDate_Month = '"+  Flight_Info[4] +"' AND departureDate_Year = '"+ Flight_Info[5] +"';")
+    ID_Flight = Db.formatage(ID_Flight)
     print("____________________________ID Flight = " + str(ID_Flight))
     print("____________________________Flight = " + str(Flight_Info))
 
@@ -141,27 +64,27 @@ def Create_Payment_Frame():
             Actual_User = User(ID_User, "", "", "", "", "2000", "01", "01", "", "", "", 0, "", "", 0, "")
             Card_User = Card(ID_User, number, cvc ,month, name, year, "10000")      #! /!\ BANK BALANCE HERE /!\
             if TypeSeat=="Economy":
-                Flight_Price = Query("SELECT economyPrice from Flight Where ID_flight = '" + str(ID_Flight[0]) + "'")
-                Flight_Price = formatage(Flight_Price)
+                Flight_Price = Db.Query("SELECT economyPrice from Flight Where ID_flight = '" + str(ID_Flight[0]) + "'")
+                Flight_Price = Db.formatage(Flight_Price)
             elif TypeSeat=="Business":
-                Flight_Price = Query("SELECT businessPrice from Flight Where ID_flight = '" + str(ID_Flight[0]) + "'")
-                Flight_Price = formatage(Flight_Price)
+                Flight_Price = Db.Query("SELECT businessPrice from Flight Where ID_flight = '" + str(ID_Flight[0]) + "'")
+                Flight_Price = Db.formatage(Flight_Price)
             print("Price = " + str(Flight_Price))
             #ADD_BDD(name, number, month, year, cvc, "10000")
             query_Card_Insert = Card_User.insert_in_BDD()
-            update(query_Card_Insert)
+            Db.update(query_Card_Insert)
             Card_User.display()
-            sold = Query("SELECT bank_balance from CreditCard Where ID_UserCard = '" + ID_User + "'")
-            sold = formatage(sold)
+            sold = Db.Query("SELECT bank_balance from CreditCard Where ID_UserCard = '" + ID_User + "'")
+            sold = Db.formatage(sold)
             print("Sold: " + str(sold))
             if(sold[0]>=Flight_Price[0]):
                 rest = sold[0] - Flight_Price[0]
                 Card_User.bank_Balance=rest
-                Passengers = Query("SELECT ID_User from Flight Where departureAirport = '"+ Flight_Info[0] +"' AND arrivalAirport = '"+ Flight_Info[1] +"' AND departureDate_Hour = '"+ Flight_Info[2] +"' AND departureDate_Day = '"+ Flight_Info[3] +"' AND departureDate_Month = '"+  Flight_Info[4] +"' AND departureDate_Year = '"+ Flight_Info[5] +"';")
-                Passengers = formatage(Passengers)
+                Passengers = Db.Query("SELECT ID_User from Flight Where departureAirport = '"+ Flight_Info[0] +"' AND arrivalAirport = '"+ Flight_Info[1] +"' AND departureDate_Hour = '"+ Flight_Info[2] +"' AND departureDate_Day = '"+ Flight_Info[3] +"' AND departureDate_Month = '"+  Flight_Info[4] +"' AND departureDate_Year = '"+ Flight_Info[5] +"';")
+                Passengers = Db.formatage(Passengers)
                 print(Passengers)
                 if len(Passengers)>0:
-                    ListPassengers = recup_Passenger(Passengers)
+                    ListPassengers = Db.recup_Passenger(Passengers)
                     ListPassengers.append(str(ID_User))
                     print("List of passengers: "+ str(ListPassengers))
                 else:
@@ -174,16 +97,16 @@ def Create_Payment_Frame():
                 FinalList = "-".join(ListPassengers)
                 Flight_Recup.ID_Passengers = FinalList
                 query_update_Card = Card_User.update_Bank_Balance()
-                update(query_update_Card)
+                Db.update(query_update_Card)
                 #update("UPDATE CreditCard SET bank_balance ='"+ str(rest) +"' WHERE ID_UserCard = '"+ str(ID_User) +"';")
                 
                 Flight_Recup.display()
                 query_update_Flight = Flight_Recup.update_Flight_Payment()
-                update(query_update_Flight)
+                Db.update(query_update_Flight)
                 #update("UPDATE Flight SET ID_User = '" + FinalList + "' WHERE departureAirport = '" + Flight_Info[0] + "' AND arrivalAirport = '" + Flight_Info[1] + "' AND departureDate_Hour = '" + Flight_Info[2] + "' AND departureDate_Day = '" + Flight_Info[3] + "' AND departureDate_Month = '" + Flight_Info[4] + "' AND departureDate_Year = '" + Flight_Info[5] + "';")
                 
-                tempFuturFlight = Query("Select futur_flight from user where ID_User = '"+ str(ID_User) +"';")
-                tempFuturFlight = formatage(tempFuturFlight)
+                tempFuturFlight = Db.Query("Select futur_flight from user where ID_User = '"+ str(ID_User) +"';")
+                tempFuturFlight = Db.formatage(tempFuturFlight)
                 Actual_User.futur_Flight = tempFuturFlight[0]
                 
                 if len(tempFuturFlight)>0:
@@ -202,7 +125,7 @@ def Create_Payment_Frame():
                 
                 Actual_User.futur_Flight = str(FinalListUser)
                 query_User_Flights = Actual_User.update_Futur_Flight()
-                update(query_User_Flights)
+                Db.update(query_User_Flights)
                 
                 Actual_User.display()
                 
@@ -211,7 +134,7 @@ def Create_Payment_Frame():
             else:
                 Card_User.display()
                 query_Delete = Card_User.Delete_Info()
-                update(query_Delete)
+                Db.update(query_Delete)
                 #update("DELETE FROM CreditCard WHERE ID_UserCard = '"+ str(ID_User) +"';")
                 show_Invalid(frame)
         else:
@@ -248,10 +171,10 @@ def Create_Payment_Frame():
     
 
     Price = CTkTextbox(master=Div_Wrapper, font=("Arial", 40, "bold"),  fg_color="transparent", height=10)
-    FlightPriceEco = Query("SELECT economyPrice from Flight Where ID_flight = '" + str(ID_Flight[0]) + "'")
-    FlightPriceEco = formatage(FlightPriceEco)
-    FlightPriceBus = Query("SELECT businessPrice from Flight Where ID_flight = '" + str(ID_Flight[0]) + "'")
-    FlightPriceBus = formatage(FlightPriceBus)
+    FlightPriceEco = Db.Query("SELECT economyPrice from Flight Where ID_flight = '" + str(ID_Flight[0]) + "'")
+    FlightPriceEco = Db.formatage(FlightPriceEco)
+    FlightPriceBus = Db.Query("SELECT businessPrice from Flight Where ID_flight = '" + str(ID_Flight[0]) + "'")
+    FlightPriceBus = Db.formatage(FlightPriceBus)
     Price.insert("2.0", "Eco: " + str(FlightPriceEco[0]) + "£ or Business: " + str(FlightPriceBus[0])+ "£")
     Price.configure(state="disabled")
     Price.grid(row=0, column=0, sticky='nsew', columnspan=3, padx=(50, 0), pady=(20, 0))
@@ -307,8 +230,8 @@ def Create_Payment_Frame():
     Btn_Validation.grid(row=2, column=0, columnspan=3)
 
     def on_closing():
-        Delete_User()
-        Reset_Loading()
+        Db.Delete_User()
+        Db.Reset_Loading()
         print("Fermeture de la page.")
         Frame.destroy()
     

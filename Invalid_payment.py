@@ -1,61 +1,9 @@
 from customtkinter import *
 import tkinter as tk
 from PIL import Image, ImageTk
-import pymysql
-
-#!------------------- DATABASE
-
-def mysqlconnect():
-    conn = pymysql.connect(
-    host='localhost',
-    user='root',
-    db='bdd_skyblitz',
-    port=8080
-)
-    return conn
-
-def Sql_Query(conn, query):
-    cur = conn.cursor()
-    cur.execute(query)
-    output = cur.fetchall()
-    return output
-
-def db_close_connecction(conn):
-    conn.close()
-
-def Query(query):
-    connec = mysqlconnect()
-    result = Sql_Query(connec, query)
-    db_close_connecction(connec)
-    return result
-
-def Reset_Loading():
-    FileLoad = open("Loading.txt", "w")
-    FileLoad.write("0")
-    FileLoad.close()
+import Database as Db
 
 #TODO --------------------------- GUI
-
-def Recup_User():
-    FileUser = open("Connect_User.txt", "r")
-    var = FileUser.readline().strip()
-    FileUser.close()
-    return var
-
-def update(query):
-    try:
-        conn = mysqlconnect()
-        cur = conn.cursor()
-        cur.execute(query)
-        conn.commit()
-        db_close_connecction(conn)
-        print("Mise à jour réussie.")
-    except Exception as e:
-        print(f"Erreur lors de la mise à jour : {e}")
-
-def Delete_User():
-    FileUser = open("Connect_User.txt", "w")
-    FileUser.close()
     
 def show_Payment(Frame_Accueil, ID):
     from payment import Create_Payment_Frame
@@ -63,13 +11,13 @@ def show_Payment(Frame_Accueil, ID):
     print("  /!\____________ DELETE CARD")
     User_Card = Card(ID, "0", "000", "01", "", "2100", "None")
     query_Delete = User_Card.Delete_Info()
-    update(query_Delete)
+    Db.update(query_Delete)
     Frame_Accueil.destroy()
     Create_Payment_Frame()
 
 def Create_Invalid_Payment_Frame():
     
-    ID_User = Recup_User()
+    ID_User = Db.Recup_User()
 
     Frame = CTk()
     Frame.title("Validation")
@@ -109,8 +57,8 @@ def Create_Invalid_Payment_Frame():
     Btn_Home.grid(row=0, column=2, sticky='se', padx=10, pady=10)
     
     def on_closing():
-        Delete_User()
-        Reset_Loading()
+        Db.Delete_User()
+        Db.Reset_Loading()
         print("Fermeture de la page.")
         Frame.destroy()
     

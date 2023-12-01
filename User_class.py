@@ -57,6 +57,11 @@ class User():
         query_update="Update User set futur_flight ='"+ str(self.futur_Flight) +"' WHERE ID_User='"+ str(self.ID) +"';"
         
         return query_update
+            
+    def update_Modification(self):
+        query_update = "UPDATE User SET first_name = '{}', last_name = '{}', mail = '{}', password = '{}', phone = '{}', city = '{}', postcode = '{}' WHERE ID_User = '{}';".format(str(self.first_name), str(self.last_name), str(self.email), str(self.password), str(self.phone_number), str(self.city), str(self.postcode), str(self.ID))
+        
+        return query_update
     
     def calculate_age(self, year, month, day):
         year = int(year)

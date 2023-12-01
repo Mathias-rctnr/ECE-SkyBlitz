@@ -6,61 +6,9 @@ import pymysql
 import random
 from Flight_class import FLight
 from User_class import User
-from payment import Create_Payment_Frame, update, show_Invalid, show_Valid
-
-#!------------------- DATABASE
-
-def mysqlconnect():
-    conn = pymysql.connect(
-    host='localhost',
-    user='root',
-    db='bdd_skyblitz',
-    port=8080
-)
-    return conn
-
-def Sql_Query(conn, query):
-    cur = conn.cursor()
-    cur.execute(query)
-    output = cur.fetchall()
-    return output
-
-def db_close_connection(conn):
-    conn.close()
-
-def Query(query):
-    connec = mysqlconnect()
-    result = Sql_Query(connec, query)
-    db_close_connection(connec)
-    return result
-
-def formatage(Data):
-    temp = []
-    for i in range(0, len(Data)):
-        temp.append(Data[i][0])
-    Data = temp
-    return Data
-
-def recup_Passenger(list):
-    print("DANS LISTE RECUP PASSENGERS")
-    output_list = list[0].split('-')
-    return output_list
-
-def Reset_Loading():
-    FileLoad = open("Loading.txt", "w")
-    FileLoad.write("0")
-    FileLoad.close()
-
-def update(query):
-    try:
-        conn = mysqlconnect()
-        cur = conn.cursor()
-        cur.execute(query)
-        conn.commit()
-        db_close_connection(conn)
-        print("Mise à jour réussie.")
-    except Exception as e:
-        print(f"Erreur lors de la mise à jour : {e}")
+from payment import Create_Payment_Frame, show_Invalid, show_Valid
+import matplotlib.pyplot as plt
+import Database as Db
 
 #TODO --------------------------- GUI
 
@@ -90,6 +38,184 @@ def Create_Frame_Compte():
     def Delete_User():
         FileUser = open("Connect_User.txt", "w")
         FileUser.close()
+        
+    def Graph(ID):
+        Graph_User = User(ID, "NULL", "NULL", "NULL", "NULL", "2000", "01", "01", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", 0, "NULL")
+        ListOfFlights = Db.Query("Select futur_flight from user where ID_User = '"+ str(Graph_User.ID) +"';")
+        ListOfFlights = Db.formatage(ListOfFlights)
+        print("List of flights: " + str(ListOfFlights))
+        if len(ListOfFlights)==0:   #Si la requete échoue, évite de faire une erreur
+            ListOfFlights=["0"]
+        Separate_Flight_User = ListOfFlights[0].split('-')
+        del Separate_Flight_User[0]
+        
+        Int_Separate_Flight_User = [int(Separate_Flight_User) for Separate_Flight_User in Separate_Flight_User]
+        print("Separate List: " + str(Int_Separate_Flight_User))
+        
+        Price_List_Flight = []
+        abcisse = []
+        for i in range(0, len(Int_Separate_Flight_User)):
+            print(Int_Separate_Flight_User[i])
+            abcisse.append(int(i+1))
+            Price = Db.Query("Select economyPrice from Flight where ID_flight = '"+ str(Int_Separate_Flight_User[i]) +"';")
+            Price = Db.formatage(Price)
+            print(Price)
+            Price_List_Flight.append(int(Price[0]))
+        print(Price_List_Flight)
+        print(abcisse)
+        
+        plt.figure(figsize=(10, 6))
+        plt.bar(Int_Separate_Flight_User, Price_List_Flight, color='#FF764A', label='Price')
+
+        plt.title('Graph of Prices with flights')
+        plt.xlabel("ID of flights")
+        plt.ylabel('Price')
+        plt.legend()
+        plt.show()
+        
+    
+    def Modify():
+        bg_color = Btn_Modify.cget('fg_color')
+        print("Couleur de fond du bouton :", bg_color)
+        
+        Temp_Nom = Name.get("1.0", "end-1c")
+        Temp_FamilleNom = LastName.get("1.0", "end-1c")
+        Temp_Email = Mail.get("1.0", "end-1c")
+        Temp_Mdp = PassWord.get("1.0", "end-1c")
+        Temp_Tel = Phone.get("1.0", "end-1c")
+        Temp_Ville = City.get("1.0", "end-1c")
+        Temp_CodePostal = PostCode.get("1.0", "end-1c")
+        Temp_Pays = Country.get("1.0", "end-1c")
+        
+        if bg_color=="#FF4C13":
+            Btn_Modify.configure(fg_color="#FF764A")
+            Btn_Modify.configure(hover_color="#FF4C13")
+            
+            Name.configure(state="normal")
+            LastName.configure(state="normal")
+            Mail.configure(state="normal")
+            PassWord.configure(state="normal")
+            Phone.configure(state="normal")
+            City.configure(state="normal")
+            PostCode.configure(state="normal")
+            Country.configure(state="normal")
+            
+            Nom_Reduce = Temp_Nom.replace("First Name: ", "")
+            FamilleNom_Reduce = Temp_FamilleNom.replace("Last Name: ", "")
+            Email_Reduce = Temp_Email.replace("E-Mail: ", "")
+            Mdp_Reduce = Temp_Mdp.replace("Password: ", "")
+            Tel_Reduce = Temp_Tel.replace("Phone: ", "")
+            Ville_Reduce = Temp_Ville.replace("City: ", "")
+            CodePostal_Reduce = Temp_CodePostal.replace("Postcode: ", "")
+            Pays_Reduce = Temp_Pays.replace("Country: ", "")
+            
+            Name.delete("0.0", "end")
+            LastName.delete("0.0", "end")
+            Mail.delete("0.0", "end")
+            PassWord.delete("0.0", "end")
+            Phone.delete("0.0", "end")
+            City.delete("0.0", "end")
+            PostCode.delete("0.0", "end")
+            Country.delete("0.0", "end")
+            
+            print(Nom_Reduce)
+            print(FamilleNom_Reduce)
+            print(Email_Reduce)
+            print(Mdp_Reduce)
+            print(Tel_Reduce)
+            print(Ville_Reduce)
+            print(CodePostal_Reduce)
+            print(Pays_Reduce)
+            
+            Name.insert("0.0", str(Nom_Reduce))
+            LastName.insert("0.0", str(FamilleNom_Reduce))
+            Mail.insert("0.0", str(Email_Reduce))
+            PassWord.insert("0.0", str(Mdp_Reduce))
+            Phone.insert("0.0", str(Tel_Reduce))
+            City.insert("0.0", str(Ville_Reduce))
+            PostCode.insert("0.0", str(CodePostal_Reduce))
+            Country.insert("0.0", str(Pays_Reduce))
+            
+        elif bg_color=="#FF764A":
+            
+            Btn_Modify.configure(fg_color="#FF4C13")
+            Btn_Modify.configure(hover_color="#FF764A")
+            
+            Nom = Name.get("1.0", "end-1c")
+            FamilleNom = LastName.get("1.0", "end-1c")
+            Email = Mail.get("1.0", "end-1c")
+            Mdp = PassWord.get("1.0", "end-1c")
+            Tel = Phone.get("1.0", "end-1c")
+            Ville = City.get("1.0", "end-1c")
+            CodePostal = PostCode.get("1.0", "end-1c")
+            Pays = Country.get("1.0", "end-1c")
+            
+            MailExist = Db.Query("SELECT COUNT(*) FROM User WHERE mail = '"+ str(Email) +"' AND ID_User <> '"+ str(ID_User) +"'; ")
+            MailExist = Db.formatage(MailExist)
+            
+            print(Nom)
+            print(FamilleNom)
+            print(MailExist)
+            print(Mdp)
+            print(Tel)
+            print(Tel.isdigit())
+            print(Ville)
+            print(CodePostal)
+            print(CodePostal.isdigit())
+            print(Pays)
+            
+            if Nom!="" and FamilleNom!="" and MailExist[0]==0 and Mdp!="" and Tel!="" and Tel.isdigit() and Ville!="" and CodePostal!="" and CodePostal.isdigit() and Pays!="":
+                Object_user = User(ID_User, "Mr.", Nom, FamilleNom, Email, "2000", "01", "01", "France", Mdp, "", CodePostal, Ville, Pays, Tel, "")
+                queryUser = Object_user.update_Modification()
+                Db.update(queryUser)
+
+            else:
+                messagebox.showinfo("error", "Your inputs are not correct")
+                
+            Name.delete("0.0", "end")
+            LastName.delete("0.0", "end")
+            Mail.delete("0.0", "end")
+            PassWord.delete("0.0", "end")
+            Phone.delete("0.0", "end")
+            City.delete("0.0", "end")
+            PostCode.delete("0.0", "end")
+            Country.delete("0.0", "end")
+            
+            User_Query_Name = Db.Query("SELECT first_name FROM User WHERE ID_User='"+ str(ID_User) +"'")
+            User_Query_Name = Db.formatage(User_Query_Name)
+            User_Query_LastName = Db.Query("SELECT last_name FROM User WHERE ID_User='"+ str(ID_User) +"'")
+            User_Query_LastName = Db.formatage(User_Query_LastName)
+            User_Query_Mail = Db.Query("SELECT mail FROM User WHERE ID_User='"+ str(ID_User) +"'")
+            User_Query_Mail = Db.formatage(User_Query_Mail)
+            User_Query_Password = Db.Query("SELECT password FROM User WHERE ID_User='"+ str(ID_User) +"'")
+            User_Query_Password = Db.formatage(User_Query_Password)
+            User_Query_Phone = Db.Query("SELECT phone FROM User WHERE ID_User='"+ str(ID_User) +"'")
+            User_Query_Phone = Db.formatage(User_Query_Phone)
+            User_Query_City = Db.Query("SELECT city FROM User WHERE ID_User='"+ str(ID_User) +"'")
+            User_Query_City = Db.formatage(User_Query_City)
+            User_Query_PostCode = Db.Query("SELECT postcode FROM User WHERE ID_User='"+ str(ID_User) +"'")
+            User_Query_PostCode = Db.formatage(User_Query_PostCode)
+            User_Query_Country = Db.Query("SELECT postcode FROM User WHERE ID_User='"+ str(ID_User) +"'")
+            User_Query_Country = Db.formatage(User_Query_Country)
+            Name.insert("1.0", "First Name: " + str(User_Query_Name[0]))
+            LastName.insert("1.0", "Last Name: " + str(User_Query_LastName[0]))
+            Mail.insert("1.0", "E-Mail: " + str(User_Query_Mail[0]))
+            PassWord.insert("1.0", "Password: " + str(User_Query_Password[0]))
+            Phone.insert("1.0", "Phone: " + str(User_Query_Phone[0]))
+            City.insert("1.0", "City: " + str(User_Query_City[0]))
+            PostCode.insert("1.0", "Postcode: " + str(User_Query_PostCode[0]))
+            Country.insert("1.0", "Country: " + str(User_Query_Country[0]))
+                
+            Name.configure(state="disabled")
+            LastName.configure(state="disabled")
+            Mail.configure(state="disabled")
+            PassWord.configure(state="disabled")
+            Phone.configure(state="disabled")
+            City.configure(state="disabled")
+            PostCode.configure(state="disabled")
+            Country.configure(state="disabled")
+            
+            
     
     ID_User = Recup_User()
     
@@ -171,8 +297,8 @@ def Create_Frame_Compte():
     
     def DeleteUserFlight(ID, depart, arrival, day, month, year, hour):
         print("DELETE")
-        ID_Search_Flight = Query("SELECT ID_flight from Flight Where departureAirport = '"+ str(depart) +"' AND arrivalAirport = '"+ str(arrival) +"' AND departureDate_Hour = '"+ str(hour) +"' AND departureDate_Day = '"+ str(day) +"' AND departureDate_Month = '"+  str(month) +"' AND departureDate_Year = '"+ str(year) +"';")
-        ID_Search_Flight = formatage(ID_Search_Flight)
+        ID_Search_Flight = Db.Query("SELECT ID_flight from Flight Where departureAirport = '"+ str(depart) +"' AND arrivalAirport = '"+ str(arrival) +"' AND departureDate_Hour = '"+ str(hour) +"' AND departureDate_Day = '"+ str(day) +"' AND departureDate_Month = '"+  str(month) +"' AND departureDate_Year = '"+ str(year) +"';")
+        ID_Search_Flight = Db.formatage(ID_Search_Flight)
         
         Book_Flight = FLight("NULL", depart, arrival, year, month, day, hour, year, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL")
         Book_User = User(ID, "NULL", "NULL", "NULL", "NULL", "2000", "01", "01", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", 0, "NULL")
@@ -181,10 +307,10 @@ def Create_Frame_Compte():
             messagebox.showinfo("error", "This flight doesn't exist")
         else:
             print("ID search flight:" + str(ID_Search_Flight))
-            list_Passengers_Flight = Query("Select ID_User from flight Where ID_flight = '" + str(ID_Search_Flight[0]) +"';")
-            list_Passengers_Flight = formatage(list_Passengers_Flight)
-            ListOfFlights = Query("Select futur_flight from user where ID_User = '"+ str(ID) +"';")
-            ListOfFlights = formatage(ListOfFlights)
+            list_Passengers_Flight = Db.Query("Select ID_User from flight Where ID_flight = '" + str(ID_Search_Flight[0]) +"';")
+            list_Passengers_Flight = Db.formatage(list_Passengers_Flight)
+            ListOfFlights = Db.Query("Select futur_flight from user where ID_User = '"+ str(ID) +"';")
+            ListOfFlights = Db.formatage(ListOfFlights)
             print("list of passengers:" + str(list_Passengers_Flight[0]))
             
             if len(list_Passengers_Flight)>0:
@@ -200,13 +326,13 @@ def Create_Frame_Compte():
                 Book_Flight.ID_Passengers = NewList
                 Book_Flight.ID_Flight = ID_Search_Flight[0]
                 query_Flight = Book_Flight.update_Flight_Passenger()
-                update(query_Flight)
+                Db.update(query_Flight)
                 
                 NewListUser = enlever_chiffre(ListOfFlights[0], int(ID_Search_Flight[0]))
                 Book_User.futur_Flight = NewListUser
                 Book_User.ID = ID
                 query_User = Book_User.update_Futur_Flight()
-                update(query_User)
+                Db.update(query_User)
             else:
                 print("ERROR NOT IN LIST")
                 print("Erreur Administrateur, ID pas dans liste futur_flight ou ID_User de flight")
@@ -216,8 +342,8 @@ def Create_Frame_Compte():
         print("Booking Admin")
         Book_Flight = FLight("NULL", depart, arrival, year, month, day, hour, year, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL")
         Book_User = User(ID, "NULL", "NULL", "NULL", "NULL", "2000", "01", "01", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", 0, "NULL")
-        ID_Search_Flight = Query("SELECT ID_flight from Flight Where departureAirport = '"+ str(Book_Flight.departure) +"' AND arrivalAirport = '"+ str(Book_Flight.arrival) +"' AND departureDate_Hour = '"+ str(Book_Flight.departureHour) +"' AND departureDate_Day = '"+ str(Book_Flight.departureDay) +"' AND departureDate_Month = '"+  str(Book_Flight.departureMonth) +"' AND departureDate_Year = '"+ str(Book_Flight.departureYear) +"';")
-        ID_Search_Flight = formatage(ID_Search_Flight)
+        ID_Search_Flight = Db.Query("SELECT ID_flight from Flight Where departureAirport = '"+ str(Book_Flight.departure) +"' AND arrivalAirport = '"+ str(Book_Flight.arrival) +"' AND departureDate_Hour = '"+ str(Book_Flight.departureHour) +"' AND departureDate_Day = '"+ str(Book_Flight.departureDay) +"' AND departureDate_Month = '"+  str(Book_Flight.departureMonth) +"' AND departureDate_Year = '"+ str(Book_Flight.departureYear) +"';")
+        ID_Search_Flight = Db.formatage(ID_Search_Flight)
         print(ID_Search_Flight)
         Book_Flight.ID_Flight = ID_Search_Flight[0]
         print(Book_Flight.ID_Flight)
@@ -225,12 +351,12 @@ def Create_Frame_Compte():
             messagebox.showinfo("error", "This flight doesn't exist")
         else:
             print("ID search flight: " + str(Book_Flight.ID_Flight))
-            list_Passengers_Flight = Query("Select ID_User from flight Where ID_flight = '" + str(Book_Flight.ID_Flight) +"';")
-            list_Passengers_Flight = formatage(list_Passengers_Flight)
+            list_Passengers_Flight = Db.Query("Select ID_User from flight Where ID_flight = '" + str(Book_Flight.ID_Flight) +"';")
+            list_Passengers_Flight = Db.formatage(list_Passengers_Flight)
             Book_Flight.ID_Passengers = list_Passengers_Flight[0]
-            ListOfFlights = Query("Select futur_flight from user where ID_User = '"+ str(Book_User.ID) +"';")
+            ListOfFlights = Db.Query("Select futur_flight from user where ID_User = '"+ str(Book_User.ID) +"';")
             print(ListOfFlights)
-            ListOfFlights = formatage(ListOfFlights)
+            ListOfFlights = Db.formatage(ListOfFlights)
             
             print(list_Passengers_Flight)
             print(ListOfFlights)
@@ -263,7 +389,7 @@ def Create_Frame_Compte():
                 Book_Flight.ID_Passengers = FinalList
                 queryFlight = Book_Flight.update_User()
                 print(queryFlight)
-                update(queryFlight)
+                Db.update(queryFlight)
                 
                 #for the table User
                 print(Separate_List_User)
@@ -281,14 +407,14 @@ def Create_Frame_Compte():
                 Book_User.futur_Flight = FinalListUser
                 Book_User.ID = ID
                 queryUser = Book_User.update_Flight()
-                update(queryUser)
+                Db.update(queryUser)
             else:
                 messagebox.showinfo("error", "User: " + str(ID) + " is already register on this flight or the user doesn't exist")
                 
     def Delete_Flight(ID, depart, arrival, day, month, year, hour):
         print("Delete Flight")
-        ID_Search_Flight = Query("SELECT ID_flight from Flight Where departureAirport = '"+ str(depart) +"' AND arrivalAirport = '"+ str(arrival) +"' AND departureDate_Hour = '"+ str(hour) +"' AND departureDate_Day = '"+ str(day) +"' AND departureDate_Month = '"+  str(month) +"' AND departureDate_Year = '"+ str(year) +"';")
-        ID_Search_Flight = formatage(ID_Search_Flight)
+        ID_Search_Flight = Db.Query("SELECT ID_flight from Flight Where departureAirport = '"+ str(depart) +"' AND arrivalAirport = '"+ str(arrival) +"' AND departureDate_Hour = '"+ str(hour) +"' AND departureDate_Day = '"+ str(day) +"' AND departureDate_Month = '"+  str(month) +"' AND departureDate_Year = '"+ str(year) +"';")
+        ID_Search_Flight = Db.formatage(ID_Search_Flight)
         print(ID_Search_Flight)
         
         Research_Flight = FLight(ID_Search_Flight[0], depart, arrival, year, month, day, hour, year, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL")
@@ -299,16 +425,16 @@ def Create_Frame_Compte():
         else:
             query_delete = Research_Flight.delete_Flight()
             print(query_delete)
-            update(query_delete)
+            Db.update(query_delete)
             
     def Add_Flight(ID, depart, arrival, day, month, year, hour, PriceEco, PriceBus, NbEco, NbBus):
         print("ADD FLIGHT")
-        Max_ID_Flight = Query("SELECT MAX(ID_flight) FROM Flight;")
-        Max_ID_Flight = formatage(Max_ID_Flight)
+        Max_ID_Flight = Db.Query("SELECT MAX(ID_flight) FROM Flight;")
+        Max_ID_Flight = Db.formatage(Max_ID_Flight)
         ID_New = int(Max_ID_Flight[0])+1
         
-        Verif_Exist = Query("SELECT ID_flight FROM Flight Where departureAirport='"+ str(depart) +"' AND arrivalAirport='"+ str(arrival) +"' AND departureDate_Year='"+ str(year) +"' AND departureDate_Month='"+ str(month) +"' AND departureDate_Day='"+ str(day) +"' AND departureDate_Hour='"+ str(hour) +"'")
-        Verif_Exist = formatage(Verif_Exist)
+        Verif_Exist = Db.Query("SELECT ID_flight FROM Flight Where departureAirport='"+ str(depart) +"' AND arrivalAirport='"+ str(arrival) +"' AND departureDate_Year='"+ str(year) +"' AND departureDate_Month='"+ str(month) +"' AND departureDate_Day='"+ str(day) +"' AND departureDate_Hour='"+ str(hour) +"'")
+        Verif_Exist = Db.formatage(Verif_Exist)
         
         print(Verif_Exist)
         
@@ -320,41 +446,41 @@ def Create_Frame_Compte():
             New_Flight = FLight(ID_New, depart, arrival, year, month, day, hour, year, arrivalHour, PriceEco, PriceBus, NbEco, NbBus, "")
             query_Flight = New_Flight.save_in_database()
             print(query_Flight)
-            update(query_Flight)
+            Db.update(query_Flight)
         else:
             messagebox.showinfo("error", "This flight already exist")
     
     def Recup_Account():
         Info=[]
-        tempName = Query("SELECT first_name FROM User WHERE ID_User ="+ ID_User +";")
-        tempName = formatage(tempName)
+        tempName = Db.Query("SELECT first_name FROM User WHERE ID_User ="+ ID_User +";")
+        tempName = Db.formatage(tempName)
         Info.append(tempName[0])
-        tempLastName = Query("SELECT last_name FROM User WHERE ID_User ="+ ID_User +";")
-        tempLastName = formatage(tempLastName)
+        tempLastName = Db.Query("SELECT last_name FROM User WHERE ID_User ="+ ID_User +";")
+        tempLastName = Db.formatage(tempLastName)
         Info.append(tempLastName[0])
-        tempmail = Query("SELECT mail FROM User WHERE ID_User ="+ ID_User +";")
-        tempmail = formatage(tempmail)
+        tempmail = Db.Query("SELECT mail FROM User WHERE ID_User ="+ ID_User +";")
+        tempmail = Db.formatage(tempmail)
         Info.append(tempmail[0])
-        tempPassword = Query("SELECT password FROM User WHERE ID_User ="+ ID_User +";")
-        tempPassword = formatage(tempPassword)
+        tempPassword = Db.Query("SELECT password FROM User WHERE ID_User ="+ ID_User +";")
+        tempPassword = Db.formatage(tempPassword)
         Info.append(tempPassword[0])
-        tempPhone = Query("SELECT phone FROM User WHERE ID_User ="+ ID_User +";")
-        tempPhone = formatage(tempPhone)
+        tempPhone = Db.Query("SELECT phone FROM User WHERE ID_User ="+ ID_User +";")
+        tempPhone = Db.formatage(tempPhone)
         Info.append(tempPhone[0])
-        tempCity = Query("SELECT city FROM User WHERE ID_User ="+ ID_User +";")
-        tempCity = formatage(tempCity)
+        tempCity = Db.Query("SELECT city FROM User WHERE ID_User ="+ ID_User +";")
+        tempCity = Db.formatage(tempCity)
         Info.append(tempCity[0])
-        tempPostCode = Query("SELECT postcode FROM User WHERE ID_User ="+ ID_User +";")
-        tempPostCode = formatage(tempPostCode)
+        tempPostCode = Db.Query("SELECT postcode FROM User WHERE ID_User ="+ ID_User +";")
+        tempPostCode = Db.formatage(tempPostCode)
         Info.append(tempPostCode[0])
-        tempCountry = Query("SELECT country FROM User WHERE ID_User ="+ ID_User +";")
-        tempCountry = formatage(tempCountry)
+        tempCountry = Db.Query("SELECT country FROM User WHERE ID_User ="+ ID_User +";")
+        tempCountry = Db.formatage(tempCountry)
         Info.append(tempCountry[0])
-        tempAdress = Query("SELECT adress FROM User WHERE ID_User ="+ ID_User +";")
-        tempAdress = formatage(tempAdress)
+        tempAdress = Db.Query("SELECT adress FROM User WHERE ID_User ="+ ID_User +";")
+        tempAdress = Db.formatage(tempAdress)
         Info.append(tempAdress[0])
-        tempAge = Query("SELECT age FROM User WHERE ID_User ="+ ID_User +";")
-        tempAge = formatage(tempAge)
+        tempAge = Db.Query("SELECT age FROM User WHERE ID_User ="+ ID_User +";")
+        tempAge = Db.formatage(tempAge)
         Info.append(tempAge[0])
         
         return Info
@@ -363,23 +489,23 @@ def Create_Frame_Compte():
         print(ID)
         Flight=[]
         if int(ID)!=0:
-            tempDepart = Query("SELECT departureAirport FROM Flight WHERE ID_flight ="+ ID +";")
-            tempDepart = formatage(tempDepart)
+            tempDepart = Db.Query("SELECT departureAirport FROM Flight WHERE ID_flight ="+ ID +";")
+            tempDepart = Db.formatage(tempDepart)
             Flight.append(tempDepart[0])
-            tempArrival = Query("SELECT arrivalAirport FROM Flight WHERE ID_flight ="+ ID +";")
-            tempArrival = formatage(tempArrival)
+            tempArrival = Db.Query("SELECT arrivalAirport FROM Flight WHERE ID_flight ="+ ID +";")
+            tempArrival = Db.formatage(tempArrival)
             Flight.append(tempArrival[0])
-            tempYear = Query("SELECT departureDate_Year FROM Flight WHERE ID_flight ="+ ID +";")
-            tempYear = formatage(tempYear)
+            tempYear = Db.Query("SELECT departureDate_Year FROM Flight WHERE ID_flight ="+ ID +";")
+            tempYear = Db.formatage(tempYear)
             Flight.append(tempYear[0])
-            tempMonth = Query("SELECT departureDate_Month FROM Flight WHERE ID_flight ="+ ID +";")
-            tempMonth = formatage(tempMonth)
+            tempMonth = Db.Query("SELECT departureDate_Month FROM Flight WHERE ID_flight ="+ ID +";")
+            tempMonth = Db.formatage(tempMonth)
             Flight.append(tempMonth[0])
-            tempDay = Query("SELECT departureDate_Day FROM Flight WHERE ID_flight ="+ ID +";")
-            tempDay = formatage(tempDay)
+            tempDay = Db.Query("SELECT departureDate_Day FROM Flight WHERE ID_flight ="+ ID +";")
+            tempDay = Db.formatage(tempDay)
             Flight.append(tempDay[0])
-            tempHour = Query("SELECT departureDate_Hour FROM Flight WHERE ID_flight ="+ ID +";")
-            tempHour = formatage(tempHour)
+            tempHour = Db.Query("SELECT departureDate_Hour FROM Flight WHERE ID_flight ="+ ID +";")
+            tempHour = Db.formatage(tempHour)
             Flight.append(tempHour[0])
         
             return Flight
@@ -531,16 +657,16 @@ def Create_Frame_Compte():
     else:
         status = "NaN"
     
-    PostCode = CTkTextbox(master=Div_Informations, font=("Arial", 35, "bold"), fg_color="transparent", text_color="#282828", height=10, width=300)
-    PostCode.insert("0.0", "Status: " + str(status))
-    PostCode.configure(state="disabled")
-    PostCode.grid_propagate(False)
-    PostCode.grid(row=5, column=2, columnspan=2, sticky="nsew", padx=(0, 40), pady=(0, 40))
+    Status = CTkTextbox(master=Div_Informations, font=("Arial", 35, "bold"), fg_color="transparent", text_color="#282828", height=10, width=300)
+    Status.insert("0.0", "Status: " + str(status))
+    Status.configure(state="disabled")
+    Status.grid_propagate(False)
+    Status.grid(row=5, column=2, columnspan=2, sticky="nsew", padx=(0, 40), pady=(0, 40))
         
     #_____BUTTON
     
     Btn_Modify = CTkButton(master=Div_Informations, text="Modify", corner_radius=50, fg_color="#FF4C13", hover_color="#FF764A", width=200, height=75, border_width=6,
-                    border_color="#FF764A", font=("Arial", 30, "bold"), text_color="#FFFFFF")
+                    border_color="#FF764A", font=("Arial", 30, "bold"), text_color="#FFFFFF", command=lambda: Modify())
     Btn_Modify.grid(row=6, column=0, columnspan=4, padx=(0, 40), pady=30)
     
     #! DIV FLIGHTS
@@ -563,9 +689,9 @@ def Create_Frame_Compte():
         Div_Print_Flights = CTkScrollableFrame(master=Div_Flights)
         Div_Print_Flights.grid(row=1, column=0, sticky="nsew")
         
-        ID_Flights = Query("SELECT futur_flight FROM User WHERE ID_User ="+ ID_User +";")
-        ID_Flights = formatage(ID_Flights)
-        list_flight = recup_Passenger(ID_Flights)
+        ID_Flights = Db.Query("SELECT futur_flight FROM User WHERE ID_User ="+ ID_User +";")
+        ID_Flights = Db.formatage(ID_Flights)
+        list_flight = Db.recup_Passenger(ID_Flights)
         print(list_flight)
         
         Flight = CTkTextbox(master=Div_Print_Flights, font=("Arial", 50, "bold"), fg_color="transparent", text_color="#282828", height=10, width=1000)
@@ -577,12 +703,12 @@ def Create_Frame_Compte():
             Info_Flight = Recup_Flight(list_flight[i+1])
             print(Info_Flight)
             Flight = CTkTextbox(master=Div_Print_Flights, font=("Arial", 35, "bold"), fg_color="transparent", text_color="#282828", height=10, width=1000)
-            Flight.insert("0.0", str(i+1) + ": From " + str(Info_Flight[0]) + " to " + str(Info_Flight[1]) + " the " + str(Info_Flight[4]) + "/"+ str(Info_Flight[3]) + "/" + str(Info_Flight[2]) + " at " + str(Info_Flight[5]) + "H00 in economy class.")
+            Flight.insert("0.0", str(i+1) + ": From " + str(Info_Flight[0]) + " to " + str(Info_Flight[1]) + " the " + str(Info_Flight[4]) + "/"+ str(Info_Flight[3]) + "/" + str(Info_Flight[2]) + " at " + str(Info_Flight[5]) + "H00.")
             Flight.configure(state="disabled")
             Flight.grid(row=2+i, column=0, sticky="nsew", pady=(0, 20), padx=(20, 0))
         
         Btn_Graph = CTkButton(master=Div_Flights, text="Graphics", corner_radius=50, fg_color="#FF4C13", hover_color="#FF764A", border_width=6,
-                        border_color="#FF764A", font=("Arial", 30, "bold"), text_color="#FFFFFF")
+                        border_color="#FF764A", font=("Arial", 30, "bold"), text_color="#FFFFFF", command=lambda: Graph(ID_User))
         Btn_Graph.grid(row=1, column=1, sticky="nsew")
     
     elif int(ID_User)<0:
@@ -671,12 +797,10 @@ def Create_Frame_Compte():
     
     def on_closing():
         Delete_User()
-        Reset_Loading()
+        Db.Reset_Loading()
         print("Fermeture de la page.")
         Frame_Accueil.destroy()
     
     Frame_Accueil.protocol("WM_DELETE_WINDOW", on_closing)
 
     Frame_Accueil.mainloop()
-    
-Create_Frame_Compte()

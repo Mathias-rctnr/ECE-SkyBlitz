@@ -2,86 +2,21 @@ from customtkinter import *
 import pymysql
 import User_class as user_file
 from tkinter import messagebox
+import Database as Db
 
-# mysqlconnect: Function connecting with the database
-# Input : NO
-# Output : NO
-def mysqlconnect():
-    conn = pymysql.connect(
-    host='localhost',
-    user='root',
-    db='bdd_skyblitz',
-    port=8080 #3306
-    )
-    return conn
-
-# db_close_connection: Function deconnecting with the database
-# Input : conn
-# Output : NO
-def db_close_connecction(conn):
-    conn.close()
-
-
-def update(query):
-    try:
-        conn = mysqlconnect()
-        cur = conn.cursor()
-        cur.execute(query)
-        conn.commit()
-        db_close_connecction(conn)
-        print("Mise à jour réussie.")
-    except Exception as e:
-        print(f"Erreur lors de la mise à jour : {e}")
-
-
-# Sql_Query: Function that returns the requested query
-# Input : conn, query
-# Output : output
-def Sql_Query(conn, query):
-    cur = conn.cursor()
-    cur.execute(query)
-    output = cur.fetchall()
-    return output
-
-# Query: Function gathering connecting, requesting and deconnecting from the database
-# Input : query
-# Output : result
-def Query(query):
-    connec = mysqlconnect()
-    result = Sql_Query(connec, query)
-    db_close_connecction(connec)
-    return result
-
-# formatage: Function that formats the SQL query into a list
-# Input : Data
-# Output : Data
-def formatage(Data):
-    temp = []
-    for i in range(0, len(Data)):
-        temp.append(Data[i][0])
-    Data = temp
-    return Data
-
-# button_connection : 
-# Input : NO
-# Output : NO
-def button_connection():
-    print("You are connected !")
-    # Aller chercher dans la BDD les données - TO DO
-    # Trouver l'utilisateur en question - TO DO
-    # Importer les données en créant un User - TO DO
-
-# button_create_new_account : 
-# Input : NO
-# Output : NO
-def button_create_new_account():
-    print("You want to create a new account !")
-    # Go on the page where we create a new user - TO DO 
-    
 def Show_Account(Frame):
     Frame.destroy()
     from Compte import Create_Frame_Compte
     Create_Frame_Compte()
+    
+def Delete_User():
+    FileUser = open("Connect_User.txt", "w")
+    FileUser.close()    
+
+def Show_New_User(Frame):
+    Frame.destroy()
+    from newAccountUser import Create_New_Account_Frame
+    Create_New_Account_Frame()
     
 def Reset_Loading():
     FileLoad = open("Loading.txt", "w")
@@ -91,16 +26,28 @@ def Reset_Loading():
 def verif_input_connec(mail, password, frame):
     error=0
     indication=""
+    MailExist = Db.Query("SELECT COUNT(*) FROM User WHERE mail = '"+ str(mail) +"'; ")
+    MailExist = Db.formatage(MailExist)
+    print(MailExist)
+    PasswordCorrect = Db.Query("SELECT COUNT(*) FROM User WHERE mail = '"+ str(mail) +"' AND password = '"+ str(password) +"';")
+    PasswordCorrect = Db.formatage(PasswordCorrect)
+    print(PasswordCorrect)
     if mail=="":
         error+=1
-        indication="Adress"
+        indication="Mail Adress"
+    elif MailExist[0]==0:
+        error+=1
+        indication="This mail adress doesn't exist."
     elif password=="":
         error+=1
         indication="Password"
+    elif PasswordCorrect[0]==0:
+        error+=1
+        indication="The password is not correct."
         
     if error==0:
-        ID_Connection = Query("SELECT ID_User FROM User WHERE mail='"+ str(mail) +"' AND password='"+ str(password) +"';")
-        ID_Connection = formatage(ID_Connection)
+        ID_Connection = Db.Query("SELECT ID_User FROM User WHERE mail='"+ str(mail) +"' AND password='"+ str(password) +"';")
+        ID_Connection = Db.formatage(ID_Connection)
         if len(ID_Connection)>0:
             print("Connected as "+str(ID_Connection[0]))
             FileUser = open("Connect_User.txt", "w")
@@ -182,10 +129,10 @@ def Create_Connection_Frame():
     #--------------------------- Buttons
     button_createAccount = CTkButton(Div, 
                                     text="Create a new account", 
-                                    command=button_create_new_account, 
+                                    command=lambda: Show_New_User(Frame), 
                                     width=200, height=50, 
                                     font=("Arial", 20, "underline"), 
-                                    fg_color="transparent", text_color="#FF764A", hover_color="#transparent",
+                                    fg_color="transparent", text_color="#FF764A",
                                     corner_radius=50)
     button_createAccount.grid(row = 6, column = 0, pady=20)
 
@@ -198,5 +145,13 @@ def Create_Connection_Frame():
                                     corner_radius=50,
                                     )
     button_connect.grid(row = 5, column = 0, pady=20)
+    
+    def on_closing():
+        Delete_User()
+        Reset_Loading()
+        print("Fermeture de la page.")
+        Frame.destroy()
+    
+    Frame.protocol("WM_DELETE_WINDOW", on_closing)
 
     Frame.mainloop()
