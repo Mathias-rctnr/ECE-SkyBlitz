@@ -4,25 +4,25 @@ import User_class as user_file
 from tkinter import messagebox
 import Database as Db
 
+# Show_Account: destroys the actual frame and shows the create account frame
+# Input : Frame
+# Output : No  
 def Show_Account(Frame):
     Frame.destroy()
     from Compte import Create_Frame_Compte
     Create_Frame_Compte()
-    
-def Delete_User():
-    FileUser = open("Connect_User.txt", "w")
-    FileUser.close()    
 
+# Show_Account: destroys the actual frame and shows the create New User frame
+# Input : Frame
+# Output : No 
 def Show_New_User(Frame):
     Frame.destroy()
     from newAccountUser import Create_New_Account_Frame
     Create_New_Account_Frame()
-    
-def Reset_Loading():
-    FileLoad = open("Loading.txt", "w")
-    FileLoad.write("0")
-    FileLoad.close()
 
+# verif_input_connec : checks if the email and the password exist in the database, it connects the user if they do exist
+# Input : mail, password, frame
+# Output : No
 def verif_input_connec(mail, password, frame):
     error=0
     indication=""
@@ -60,7 +60,9 @@ def verif_input_connec(mail, password, frame):
     else:
         messagebox.showinfo("error", "ERROR INPUTS: "+ str(indication))
     
-
+# Create_Connection_Frame : creates the connection frame
+# Input : No
+# Output : No
 def Create_Connection_Frame():
 
     Frame = CTk()
@@ -147,8 +149,8 @@ def Create_Connection_Frame():
     button_connect.grid(row = 5, column = 0, pady=20)
     
     def on_closing():
-        Delete_User()
-        Reset_Loading()
+        Db.Delete_User()
+        Db.Reset_Loading()
         print("Fermeture de la page.")
         Frame.destroy()
     

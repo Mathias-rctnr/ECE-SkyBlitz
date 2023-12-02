@@ -8,6 +8,9 @@ import Database as Db
 
 #TODO --------------------------- GUI
 
+# Create_Frame_Menu : creates the home window
+# Input : No
+# Output : No
 def Create_Frame_Menu():
     
     ID_User = Db.Recup_User()
@@ -25,10 +28,16 @@ def Create_Frame_Menu():
     Frame.rowconfigure(2, weight=5)
     Frame.columnconfigure(0, weight=1)
 
+    # show_next_flights :  when the "BOOK" button is clicked, the current menu frame is closed, and a new frame displaying next flights is created and shown
+    # Input : Frame
+    # Output : No
     def show_next_flights(Frame):
         Frame.destroy()
         Create_Frame_Next_flights("", "", "", "", "")
         
+    # VerifDate : makes sure the date of the futur flight is not in the past
+    # Input : No
+    # Output : a booleen  
     def VerifDate():
         Today = datetime.date.today()
         Mois = Convert_Month(Input_Month.get())
@@ -41,11 +50,17 @@ def Create_Frame_Menu():
         else:
             return False
         
+    # show_Connection : when the "ACCOUNT" button is clicked, the current menu frame is closed, and the user account connection frame is created and shown
+    # Input : Frame
+    # Output : No    
     def show_Connection(Frame):
         Frame.destroy()
         from Connexion import Create_Connection_Frame
         Create_Connection_Frame()
-        
+    
+    # Verif_Input : displays error message box to the user if the date is too old or if inputs are wrong
+    # Input : Frame
+    # Output : No 
     def Verif_Input(Frame):
         if ((Departure_Input.get()!="Departure") and (Arrival_Input.get()!="Arrival") and (Input_Year.get()!="Year") and (Input_Month.get()!="Month") and (Input_Day.get()!="Day")) and (VerifDate()):
             show_next_flights_Research(Frame)
@@ -53,7 +68,10 @@ def Create_Frame_Menu():
             messagebox.showinfo("error", "Your date are too old")
         else:
             messagebox.showinfo("error", "Your inputs are not correct.")
-            
+    
+    # VerifConnection : when the "ACCOUNT" button is clicked, it checks if the user is already connected or not 
+    # Input : ID, Frame
+    # Output : No
     def VerifConnection(ID, Frame):
         if ID=="":
             print("Pas de Connexion")
@@ -64,7 +82,9 @@ def Create_Frame_Menu():
             from Compte import Create_Frame_Compte
             Create_Frame_Compte()
     
-        
+    # show_next_flights_Research : displays information about the next flights based on the user's inputs
+    # Input : Frame
+    # Output : No
     def show_next_flights_Research(Frame):
         Frame.destroy()
         Mois = Convert_Month(Input_Month.get())
@@ -127,6 +147,9 @@ def Create_Frame_Menu():
     Month = ["jan", 'feb', 'mars', 'april', 'mai', 'jun', 'jul', 'aug', 'sept', 'oct', 'nov', 'dec']
     Day = [str(i) for i in range(1, 32)]
     
+    # Convert_Month :  transforms the three first letters of the month in the number of the month
+    # Input : mois
+    # Output : a number or None
     def Convert_Month(mois):
         mois = mois.lower()
         mois_liste = ["jan", 'feb', 'mars', 'april', 'mai', 'jun', 'jul', 'aug', 'sept', 'oct', 'nov', 'dec']
@@ -189,6 +212,9 @@ def Create_Frame_Menu():
     
     print(Departure_Input.get())
     
+    # on_closing : does a cleanup process before closing the application window
+    # Input : No
+    # Output : No
     def on_closing():
         Db.Delete_User()
         Db.Reset_Loading()

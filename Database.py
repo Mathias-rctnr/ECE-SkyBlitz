@@ -48,6 +48,9 @@ def formatage(Data):
     Data = temp
     return Data
 
+# Recup_User : reads the name of the actual User
+# Input : No
+# Output : var
 def Recup_User():
     FileUser = open("Connect_User.txt", "r")
     var = FileUser.readline().strip()
@@ -55,6 +58,9 @@ def Recup_User():
     FileUser.close()
     return var
 
+# Analyze_Loading : simulates cookies to check if the app has already been opened
+# Input : No
+# Output : var
 def Analyze_Loading():
     FileUser = open("Loading.txt", "r")
     var = FileUser.readline().strip()
@@ -68,11 +74,17 @@ def Analyze_Loading():
         
     return var
 
+# Analyze_Loading : it deletes the cookies of the loading page
+# Input : No
+# Output : No
 def Reset_Loading():
     FileLoad = open("Loading.txt", "w")
     FileLoad.write("0")
     FileLoad.close()
 
+# Delete_User : if the user leaves, it deletes the cookies
+# Input : No
+# Output : No
 def Delete_User():
     FileUser = open("Connect_User.txt", "w")
     FileUser.close()

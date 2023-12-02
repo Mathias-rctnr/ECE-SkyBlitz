@@ -10,10 +10,16 @@ import Database as Db
 
 #TODO --------------------------- GUI
 
+# Show_Account: destroys the actual frame and shows the payment
+# Input : Frame
+# Output : No
 def show_Payment(Frame):
     Frame.destroy()
     Create_Payment_Frame()
 
+# Show_Account: destroys the actual frame and shows the frame of the next flights
+# Input : Frame
+# Output : No  
 def Create_Frame_Next_flights(Airport_Dep, Airport_Arriv, Year, Month, Day):
     
     ID_User = Db.Recup_User()
@@ -30,11 +36,17 @@ def Create_Frame_Next_flights(Airport_Dep, Airport_Arriv, Year, Month, Day):
 
     Frame_Accueil.grid_propagate(False)
     
+    # Show_Account: destroys the actual frame and shows the frame of the connection
+    # Input : Frame
+    # Output : No  
     def show_Connection(Frame):
                 Frame.destroy()
                 from Connexion import Create_Connection_Frame
                 Create_Connection_Frame()
     
+    # Show_Account: destroys the actual frame and shows the frame of the Menu
+    # Input : Frame
+    # Output : No 
     def show_Menu(Frame_Accueil):
         from Accueil import Create_Frame_Menu
         Frame_Accueil.destroy()
@@ -70,7 +82,9 @@ def Create_Frame_Next_flights(Airport_Dep, Airport_Arriv, Year, Month, Day):
 
 
     #? AFFICHAGE VOLS
-    
+    # Show_Account: Display the "No Result" Frame
+    # Input : No
+    # Output : No 
     def No_Result():
         
         Div_Result = CTkFrame(master=Canvas, fg_color="#CBCBCB", width=(Frame_Accueil.winfo_screenwidth()*0.65), height=200, corner_radius=35, border_width=5, bg_color="transparent")
@@ -90,6 +104,9 @@ def Create_Frame_Next_flights(Airport_Dep, Airport_Arriv, Year, Month, Day):
         TitreDeparture.grid_propagate(False)
         TitreDeparture.grid(row=1, column=1, sticky='nsew')
 
+    # Show_Account: Create a little frame for a flight
+    # Input : row, deparutre Airport, Arrival Airport, Departure Hour, Departure Day, Departure Month, Departure Year, Arrival Hour
+    # Output : No 
     def Creation_Div_Vol(lig, departureAirp, arrivalAirp, Dep_hour ,Dep_day, Dep_month, Dep_year, Arriv_hour):
 
         Div_Result = CTkFrame(master=Canvas, fg_color="#CBCBCB", width=(Frame_Accueil.winfo_screenwidth()*0.65), height=200, corner_radius=35, border_width=5, bg_color="transparent")
@@ -182,6 +199,9 @@ def Create_Frame_Next_flights(Airport_Dep, Airport_Arriv, Year, Month, Day):
     DepartureYear = Db.formatage(DepartureYear)
     print(DepartureYear)
     
+    # Show_Account: Do every action for booking a flight. Create a payment frame
+    # Input : index, frame
+    # Output : No 
     def Booking(index, frame):
         
         if ID_User!="":
