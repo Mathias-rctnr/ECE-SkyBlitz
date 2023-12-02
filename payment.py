@@ -9,6 +9,9 @@ from User_class import User, Card
 from Flight_class import FLight
 import Database as Db
 
+# Recup_info_flight : takes the informations of a flight from a text file
+# Input : No
+# Output : Info
 def Recup_info_flight():
     
     #0=Departure___1=Arrival___2=Hour___3=Day___4=Month_5=Year
@@ -24,15 +27,23 @@ def Recup_info_flight():
 
 #TODO --------------------------- GUI
 
-
+# show_Invalid : shows the invalid payment frame
+# Input : Frame
+# Output : No
 def show_Invalid(Frame):
     Frame.destroy()
     Create_Invalid_Payment_Frame()
-    
+
+# show_Valid : shows the valid payment frame
+# Input : Frame
+# Output : No    
 def show_Valid(Frame):
     Frame.destroy()
     Create_Valid_Payment_Frame()
-    
+
+# Create_Payment_Frame : creates and handles the frame for the payment
+# Input : No
+# Output : No     
 def Create_Payment_Frame():
     
     ID_User = Db.Recup_User()
@@ -46,6 +57,9 @@ def Create_Payment_Frame():
     Flight_Recup = FLight(str(ID_Flight[0]), Flight_Info[0], Flight_Info[1], Flight_Info[5], Flight_Info[4], Flight_Info[3], Flight_Info[2], 0, 0, 0, 0, 0, 0, "")
     Flight_Recup.display()
     
+    # verif_Payment : checks if the payment is valid or not
+    # Input : name, number, month, year, cvc, frame, TypeSeat
+    # Output : No 
     def verif_Payment(name, number, month, year, cvc, frame, TypeSeat):
         error = 0
         if (not name.replace(" ", "").isalpha() or not len(name)>=3):
@@ -229,6 +243,9 @@ def Create_Payment_Frame():
                             command=lambda: verif_Payment(Name_Input.get(), Number_Input.get(), Month_Exp_Input.get(), Year_Exp_Input.get(), CVC_Input.get(), Frame, TypeOfSeat.get()))
     Btn_Validation.grid(row=2, column=0, columnspan=3)
 
+    # on_closing : closes the actual frame
+    # Input : No
+    # Output : No 
     def on_closing():
         Db.Delete_User()
         Db.Reset_Loading()

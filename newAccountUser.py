@@ -4,19 +4,31 @@ from User_class import User
 import datetime
 from tkinter import messagebox
 import Database as Db
-    
+
+# Create_New_Account_Frame : shows the frame where the user can create a new account
+# Input : No
+# Output : No
 def Create_New_Account_Frame():
     
+    # show_Connection : shows the the connection frame
+    # Input : Frame
+    # Output : No
     def show_Connection(Frame):
         Frame.destroy()
         from Connexion import Create_Connection_Frame
         Create_Connection_Frame()
     
+    # Show_Account : shows the the account frame
+    # Input : Frame
+    # Output : No
     def Show_Account(Frame):
         Frame.destroy()
         from Compte import Create_Frame_Compte
         Create_Frame_Compte()
 
+    # Verif_Input_Account : checks if all inputs are correct and not empty
+    # Input : title, Firstname, Lastname, year, month, day, nationality, adress, city, postCode, country, phone, mail, password, frame
+    # Output : No
     def Verif_Input_Account(title, Firstname, Lastname, year, month, day, nationality, adress, city, postCode, country, phone, mail, password, frame):
         error=0
         indication=""
@@ -311,17 +323,3 @@ def Create_New_Account_Frame():
     Principal_frame.protocol("WM_DELETE_WINDOW", on_closing)
 
     Principal_frame.mainloop()
-
-# To do :
-# - Ajouter un scroll option date 
-# - Enregistrer info dans database --> help
-# - Comment changer de page avec les boutons (si fonction main -> comment avoir acces aux infos car je ne peux pas passer les infos en paramètres avec une commande de bouton)
-
-# - Changer l'attribut dateNaissance par age dans User
-# - Ajouter un ID dans la classe User
-
-""" TO DO
-Page d'accueil
-    message d'erreur specifique à l'erreur
-    erreur date du passée
-"""

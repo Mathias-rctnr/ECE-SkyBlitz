@@ -11,12 +11,17 @@ import matplotlib.pyplot as plt
 import Database as Db
 
 #TODO --------------------------- GUI
-
+# show_Menu : destroys the Accueil frame and shows the create menu frame
+# Input : Frame_Accueil
+# Output : No
 def show_Menu(Frame_Accueil):
         from Accueil import Create_Frame_Menu
         Frame_Accueil.destroy()
         Create_Frame_Menu()
 
+# Convert_Month :  transforms the three first letters of the month in the number of the month
+# Input : mois
+# Output : a number or None
 def Convert_Month(mois):
         mois = mois.lower()
         mois_liste = ["jan", 'feb', 'mars', 'april', 'mai', 'jun', 'jul', 'aug', 'sept', 'oct', 'nov', 'dec']
@@ -26,19 +31,29 @@ def Convert_Month(mois):
         else:
             return None
 
-
+# Create_Frame_Compte : creates the frame where the user's info are shown
+# Input : No
+# Output : No
 def Create_Frame_Compte():
-    
+    # Recup_User : takes the ID User thanks to the cookies
+    # Input : No
+    # Output : var
     def Recup_User():
         FileUser = open("Connect_User.txt", "r")
         var = FileUser.readline().strip()
         FileUser.close()
         return var
 
+    # Delete_User : deletes the ID User thanks to the cookies
+    # Input : No
+    # Output : No
     def Delete_User():
         FileUser = open("Connect_User.txt", "w")
         FileUser.close()
-        
+
+    # Delete_User : displays a graph with the ID and the number of the flight
+    # Input : ID
+    # Output : No    
     def Graph(ID):
         Graph_User = User(ID, "NULL", "NULL", "NULL", "NULL", "2000", "01", "01", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL", 0, "NULL")
         ListOfFlights = Db.Query("Select futur_flight from user where ID_User = '"+ str(Graph_User.ID) +"';")
@@ -73,7 +88,9 @@ def Create_Frame_Compte():
         plt.legend()
         plt.show()
         
-    
+    # Modify : modifies information of a user in the account frame f we click on the button
+    # Input : No
+    # Output : No
     def Modify():
         bg_color = Btn_Modify.cget('fg_color')
         print("Couleur de fond du bouton :", bg_color)
@@ -218,7 +235,10 @@ def Create_Frame_Compte():
             
     
     ID_User = Recup_User()
-    
+
+    # verifInputAdmin : verifies in the admin page if all the data are correct
+    # Input : choice, depart, arrival, day, month, year, hour, time, ID, EcoPrice, BusPrice, NbEco, NbBus
+    # Output : No
     def verifInputAdmin(choice, depart, arrival, day, month, year, hour, time, ID, EcoPrice, BusPrice, NbEco, NbBus):
         error=0
         if depart=="":
@@ -288,6 +308,9 @@ def Create_Frame_Compte():
         elif error!=0:
             messagebox.showinfo("error", "Your inputs are not correct")
     
+    # enlever_chiffre : deletes numeric numbers from a string
+    # Input : string, chiffre_a_enlever
+    # Output : nouvelle_chaine
     def enlever_chiffre(string, chiffre_a_enlever):
         chiffres = string.split('-')
         chiffres_filtres = [chiffre for chiffre in chiffres if chiffre != str(chiffre_a_enlever)]
@@ -295,6 +318,9 @@ def Create_Frame_Compte():
 
         return nouvelle_chaine
     
+    # DeleteUserFlight : deletes a flight from the futur flights list of the user
+    # Input : ID, depart, arrival, day, month, year, hour
+    # Output : No
     def DeleteUserFlight(ID, depart, arrival, day, month, year, hour):
         print("DELETE")
         ID_Search_Flight = Db.Query("SELECT ID_flight from Flight Where departureAirport = '"+ str(depart) +"' AND arrivalAirport = '"+ str(arrival) +"' AND departureDate_Hour = '"+ str(hour) +"' AND departureDate_Day = '"+ str(day) +"' AND departureDate_Month = '"+  str(month) +"' AND departureDate_Year = '"+ str(year) +"';")
@@ -337,7 +363,10 @@ def Create_Frame_Compte():
                 print("ERROR NOT IN LIST")
                 print("Erreur Administrateur, ID pas dans liste futur_flight ou ID_User de flight")
                 messagebox.showinfo("error", "User: " + str(ID) + " is not register for this flight")
-                
+
+    # Booking_Admin : booking a flight as an admin
+    # Input : ID, depart, arrival, day, month, year, hour
+    # Output : No             
     def Booking_Admin(ID, depart, arrival, day, month, year, hour):
         print("Booking Admin")
         Book_Flight = FLight("NULL", depart, arrival, year, month, day, hour, year, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL")
@@ -410,7 +439,10 @@ def Create_Frame_Compte():
                 Db.update(queryUser)
             else:
                 messagebox.showinfo("error", "User: " + str(ID) + " is already register on this flight or the user doesn't exist")
-                
+
+    # Delete_Flight : deletes a flight of the user from the database
+    # Input : ID, depart, arrival, day, month, year, hour
+    # Output : No            
     def Delete_Flight(ID, depart, arrival, day, month, year, hour):
         print("Delete Flight")
         ID_Search_Flight = Db.Query("SELECT ID_flight from Flight Where departureAirport = '"+ str(depart) +"' AND arrivalAirport = '"+ str(arrival) +"' AND departureDate_Hour = '"+ str(hour) +"' AND departureDate_Day = '"+ str(day) +"' AND departureDate_Month = '"+  str(month) +"' AND departureDate_Year = '"+ str(year) +"';")
@@ -426,7 +458,10 @@ def Create_Frame_Compte():
             query_delete = Research_Flight.delete_Flight()
             print(query_delete)
             Db.update(query_delete)
-            
+
+    # Add_Flight : adds a flight in the database
+    # Input : ID, depart, arrival, day, month, year, hour, PriceEco, PriceBus, NbEco, NbBus
+    # Output : No         
     def Add_Flight(ID, depart, arrival, day, month, year, hour, PriceEco, PriceBus, NbEco, NbBus):
         print("ADD FLIGHT")
         Max_ID_Flight = Db.Query("SELECT MAX(ID_flight) FROM Flight;")
@@ -450,6 +485,9 @@ def Create_Frame_Compte():
         else:
             messagebox.showinfo("error", "This flight already exist")
     
+    # Recup_Account : collects User data from the database thanks to the ID of the user
+    # Input : No
+    # Output : Info
     def Recup_Account():
         Info=[]
         tempName = Db.Query("SELECT first_name FROM User WHERE ID_User ="+ ID_User +";")
@@ -485,6 +523,9 @@ def Create_Frame_Compte():
         
         return Info
     
+    # Recup_Flight : collects Flight data from the database thanks to the ID of the flight
+    # Input : ID
+    # Output : Flight
     def Recup_Flight(ID):
         print(ID)
         Flight=[]
@@ -794,7 +835,9 @@ def Create_Frame_Compte():
                         border_color="#FF764A", font=("Arial", 30, "bold"), text_color="#FFFFFF", command=lambda: verifInputAdmin(4, EntryDepart.get(), EntryArrival.get(), Entry_Day.get(), Entry_Month.get(), Entry_Year.get(), Entry_Hour.get(), Entry_Type.get(), EntryID.get(), EntryPriceEco.get(), EntryPriceBus.get(), Entry_Nb_Place_ECO.get(), Entry_Nb_Place_BUS.get()))
         Btn_Add_Flight.grid(row=7, column=1, pady=30)
     
-    
+    # on_closing : closes the accueil frame
+    # Input : No
+    # Output : No
     def on_closing():
         Delete_User()
         Db.Reset_Loading()

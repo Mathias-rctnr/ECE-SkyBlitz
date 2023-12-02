@@ -4,7 +4,9 @@ from PIL import Image, ImageTk
 import Database as Db
 
 #TODO --------------------------- GUI
-    
+# show_Payment : creates a fake card to erase the invalid card in the database
+# Input : Frame_Accueil, ID
+# Output : No     
 def show_Payment(Frame_Accueil, ID):
     from payment import Create_Payment_Frame
     from User_class import Card
@@ -15,6 +17,9 @@ def show_Payment(Frame_Accueil, ID):
     Frame_Accueil.destroy()
     Create_Payment_Frame()
 
+# Create_Invalid_Payment_Frame : creates a frame for an invalid payment
+# Input : No
+# Output : No 
 def Create_Invalid_Payment_Frame():
     
     ID_User = Db.Recup_User()
@@ -56,6 +61,9 @@ def Create_Invalid_Payment_Frame():
                     border_color="#FF764A", font=("Arial", 30, "bold"), text_color="#FFFFFF", command=lambda: show_Payment(Frame, ID_User))
     Btn_Home.grid(row=0, column=2, sticky='se', padx=10, pady=10)
     
+    # on_closing : closes the actual frame
+    # Input : No
+    # Output : No 
     def on_closing():
         Db.Delete_User()
         Db.Reset_Loading()

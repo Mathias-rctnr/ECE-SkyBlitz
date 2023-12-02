@@ -26,6 +26,9 @@ class User():
     
     
     # Methods
+    # display : displays the informations of the user
+    # Input : self
+    # Output : No
     def display(self):
         print("Title: ", self.title)
         print("ID: ", self.ID)
@@ -38,31 +41,49 @@ class User():
         print("Adress: ", self.adress, " - ", self.postcode, " - ", self.city, " - ", self.country)
         print("Phone: ", self.phone_number)
 
+    # save_in_database : Save the user informations in the database
+    # Input : self
+    # Output : insert_query
     def save_in_database(self):
         insert_query = "INSERT INTO user (ID_User, Title, first_name, last_name, mail, age, Nationality, password, city, postcode, country, adress, phone, futur_flight) VALUES ('"+ str(self.ID) +"','"+ str(self.title) +"','"+ str(self.first_name) +"','"+ str(self.last_name) +"','"+ str(self.email) +"','"+ str(self.age) +"','"+ str(self.nationality) +"', '"+ str(self.password) +"', '"+ str(self.city) +"', '"+ str(self.postcode) +"', '"+ str(self.country) +"', '"+ str(self.adress) +"', '"+ str(self.phone_number) +"','"+ str(self.futur_Flight) +"')"
         
         return insert_query
     
+    # connection : Extracts the user ID from the database that matches with the email and password
+    # Input : self
+    # Output : select
     def connection(self):
         select = "SELECT ID_User FROM User WHERE mail='"+ str(self.email) +"' AND password='"+ str(self.password) +"';"
 
         return select
     
+    # update_Flight : updates futur flights of the user in the database
+    # Input : self
+    # Output : query_update
     def update_Flight(self):
         query_update="Update User set futur_flight ='"+ str(self.futur_Flight) +"' WHERE ID_User='"+ str(self.ID) +"';"
         
         return query_update
     
+    # update_Futur_Flight : updates futur flights of the user in the database
+    # Input : self
+    # Output : query_update
     def update_Futur_Flight(self):
         query_update="Update User set futur_flight ='"+ str(self.futur_Flight) +"' WHERE ID_User='"+ str(self.ID) +"';"
         
         return query_update
-            
+
+    # update_Modification : modifies informations of the User in the database
+    # Input : self
+    # Output : query_update        
     def update_Modification(self):
         query_update = "UPDATE User SET first_name = '{}', last_name = '{}', mail = '{}', password = '{}', phone = '{}', city = '{}', postcode = '{}' WHERE ID_User = '{}';".format(str(self.first_name), str(self.last_name), str(self.email), str(self.password), str(self.phone_number), str(self.city), str(self.postcode), str(self.ID))
         
         return query_update
     
+    # calculate_age : calculates the age with the date of birth
+    # Input : self, year, month, day
+    # Output : age
     def calculate_age(self, year, month, day):
         year = int(year)
         month = int(month)
@@ -79,6 +100,7 @@ class User():
         return age
     
 class Card(User):
+    # Constructor
     def __init__(self, ID, numCard, CVC, exp_month, owner, exp_year, bank):
         super().__init__(ID, "", "", "", "", "2000", "01", "01", "", "", "", "", "", "", "", [])
         self.numero = numCard
@@ -87,18 +109,28 @@ class Card(User):
         self.expiry_Year = exp_year
         self.owner = owner
         self.bank_Balance = bank
+
+    # Methods
         
-    
+    # insert_in_BDD : inserts card informations in the database
+    # Input : self
+    # Output : query
     def insert_in_BDD(self):
         query = "INSERT INTO CreditCard (ID_UserCard, numero, CVC, expiryDate_Month, owner, expiryDate_Year, bank_balance) VALUES ('"+ str(self.ID) +"', '"+ str(self.numero) +"', '"+ str(self.CVV) +"', '"+ str(self.expiry_Month) +"', '"+ str(self.owner) +"', '"+ str(self.expiry_Year) +"', '"+ str(self.bank_Balance) +"');"
         
         return query
-        
+    
+    # update_Bank_Balance : updates the credit card information in the database
+    # Input : self
+    # Output : query_update     
     def update_Bank_Balance(self):
         query_update = "UPDATE CreditCard SET bank_balance ='"+ str(self.bank_Balance) +"' WHERE ID_UserCard = '"+ str(self.ID) +"';"
         
         return query_update
     
+    # Delete_Info : deletes the credit card from the database
+    # Input : self
+    # Output : query_delete
     def Delete_Info(self):
         query_delete = "DELETE FROM CreditCard WHERE ID_UserCard = '"+ str(self.ID) +"';"
         

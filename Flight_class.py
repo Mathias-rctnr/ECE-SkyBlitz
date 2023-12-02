@@ -17,6 +17,9 @@ class FLight():
         self.ID_Passengers = ID_User    
     
     # Methods
+    # display : displays the informations of a flight
+    # Input : self
+    # Output : No
     def display(self):
         print("ID: ", self.ID_Flight)
         print("Departure: ", self.departure)
@@ -32,27 +35,42 @@ class FLight():
         print("Seat Economic: ", self.Seat_Economic)
         print("Seat Bussiness: ", self.Seat_Business)
         print("List of passengers: ", self.ID_Passengers)
-        
+
+    # save_in_database : save a flight in the database
+    # Input : self
+    # Output : insert_query    
     def save_in_database(self):
         insert_query = requete = "INSERT INTO Flight (ID_flight, departureAirport, arrivalAirport, departureDate_Year, arrivalDate_Year, arrivalDate_Hour, economyPrice, businessPrice, availableSeatEco, availableSeatBusiness, departureDate_Month, departureDate_Day, departureDate_Hour) VALUES ('"+str(self.ID_Flight) +"', '"+ str(self.departure) +"', '"+ str(self.arrival) +"', '"+ str(self.departureYear) +"', '"+str(self.arrivalYear)+"', '"+ str(self.arrivalHour) +"', '"+ str(self.Price_Economic) +"', '"+ str(self.Price_Bussiness) +"', '"+ str(self.Seat_Economic) +"', '"+ str(self.Seat_Business)+"', '"+ str(self.departureMonth) +"', '"+ str(self.departureDay) +"', '"+ str(self.departureHour) +"');"
         
         return insert_query
     
+    # delete_Flight : deletes a flight in the database
+    # Input : self
+    # Output : delete_query 
     def delete_Flight(self):
         delete_query = "DELETE FROM Flight WHERE ID_flight ='"+ str(self.ID_Flight) +"';"
         
         return delete_query
     
+    # update_User : updates a flight in the flight table in the database
+    # Input : self
+    # Output : update_query
     def update_User(self):
         update_query = "Update flight set ID_User='"+ str(self.ID_Passengers) +"' WHERE ID_Flight='"+ str(self.ID_Flight) +"';"
         
         return update_query
     
+    # update_Flight_Passenger : updates a flight in the user table in the database
+    # Input : self
+    # Output : query_update
     def update_Flight_Passenger(self):
         query_update = "Update flight set ID_User='"+ str(self.ID_Passengers) +"' WHERE ID_Flight='"+ str(self.ID_Flight) +"';"
         
         return query_update
     
+    # update_Flight_Payment : updates the passenger list in the database
+    # Input : self
+    # Output : query_update
     def update_Flight_Payment(self):
         query_update = "UPDATE Flight SET ID_User = '" + str(self.ID_Passengers) + "' WHERE departureAirport = '" + str(self.departure) + "' AND arrivalAirport = '" + str(self.arrival) + "' AND departureDate_Hour = '" + str(self.departureHour) + "' AND departureDate_Day = '" + str(self.departureDay) + "' AND departureDate_Month = '" + str(self.departureMonth) + "' AND departureDate_Year = '" + str(self.departureYear) + "';"
         

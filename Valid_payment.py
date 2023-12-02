@@ -9,11 +9,17 @@ import Database as Db
 
 ID_User = Db.Recup_User()
 
+# show_Menu : shows the menu frame
+# Input : frame
+# Output : No
 def show_Menu(frame):
     from Accueil import Create_Frame_Menu
     frame.destroy()
     Create_Frame_Menu()
 
+# Create_Valid_Payment_Frame: Shows the Validation payment frame
+# Input : No
+# Output : No
 def Create_Valid_Payment_Frame():
 
     Frame = CTk()
@@ -54,6 +60,9 @@ def Create_Valid_Payment_Frame():
                     border_color="#FF764A", font=("Arial", 30, "bold"), text_color="#FFFFFF", command=lambda: show_Menu(Frame))
     Btn_Home.grid(row=0, column=2, sticky='se', padx=10, pady=10)
     
+    # on_closing: closes the actual frame
+    # Input : No
+    # Output : No
     def on_closing():
         Db.Delete_User()
         Db.Reset_Loading()
